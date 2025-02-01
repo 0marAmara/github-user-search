@@ -1,0 +1,20 @@
+<a [href]="user()?.html_url" target="_blank" class="max-w-screen-lg mx-auto">
+  <div class="max-w-sm mx-auto bg-white hover:bg-gray-50 transition-all duration-300 shadow-lg rounded-lg overflow-hidden cursor-pointer border border-gray-200">
+    <div class="flex items-center p-6">
+      <img
+        [ngSrc]="user()!.avatar_url"
+        alt="User Avatar"
+        class="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
+        height="64"
+        width="64"
+      />
+      <div class="ml-4">
+        <h2 class="text-xl font-bold text-gray-800">{{ user()!.login }}</h2>
+        <p class="text-sm text-gray-600">{{ user()!.type }}</p>
+        <p class="text-sm text-gray-500 mt-1">
+          Score: <span class="font-semibold">{{ user()!.score }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</a>
