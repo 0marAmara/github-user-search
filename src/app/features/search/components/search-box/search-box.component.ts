@@ -1,6 +1,8 @@
-import {Component, output} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
-import {debounceTime, of, Subject, switchMap} from 'rxjs';
+import {Component, inject, OnInit} from '@angular/core';
+import {FormControl, ReactiveFormsModule} from '@angular/forms';
+import {debounceTime, of, switchMap} from 'rxjs';
+import {Store} from '@ngrx/store';
+import {searchUsers} from '@app/features/search/state/users.actions';
 
 @Component({
   selector: 'app-search-box',
@@ -11,25 +13,19 @@ import {debounceTime, of, Subject, switchMap} from 'rxjs';
   templateUrl: './search-box.component.html',
   styleUrl: './search-box.component.css'
 })
-export class SearchBoxComponent {
-  searchForUser = output<string>()
-  private searchSubject = new Subject<string>();
+export class SearchBoxComponent implements OnInit {
+  inputControl = new FormControl('');
+  private store = inject(Store);
 
-  constructor() {
-    this.searchSubject.pipe(
+  ngOnInit() {
+    this.inputControl.valueChanges.pipe(
       debounceTime(300),
-      switchMap(search => {
-        if(search.trim().length == 0){
-          return of(search);
+      switchMap((searchTerm) => {
+        if (searchTerm && searchTerm.trim() !== '') {
+          this.store.dispatch(searchUsers({searchTerm: searchTerm || ''}));
         }
-        this.searchForUser.emit(search)
-        return of(search);
-      }),
+        return of({});
+      })
     ).subscribe();
-  }
-
-  onInputChange(event: Event): void {
-    const inputValue = (event.target as HTMLInputElement).value;
-    this.searchSubject.next(inputValue);
   }
 }

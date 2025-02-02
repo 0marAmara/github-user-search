@@ -6,3 +6,9 @@ export interface UserModel {
   score: number;
   html_url: string;
 }
+
+export interface UsersResponse {
+  total_count: number;
+  incomplete_results: boolean;
+  items: UserModel[];
+}

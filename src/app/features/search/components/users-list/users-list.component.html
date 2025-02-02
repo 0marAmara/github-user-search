@@ -1,5 +1,7 @@
-<div class="flex flex-col gap-4 w-fit mx-auto">
-  @for (user of users(); track user.login) {
-    <app-user-item [user]="user"></app-user-item>
+@if ((users$|async) && (users$|async)!.length > 0) {
+  <div class="flex flex-col gap-4 w-fit mx-auto">
+    @for (user of users$ | async; track user.login) {
+      <app-user-item [user]="user"></app-user-item>
+    }
+  </div>
 }
-</div>
