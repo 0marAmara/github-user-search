@@ -1,10 +1,9 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {SearchBoxComponent} from '@app/features/search/components/search-box/search-box.component';
 import {UsersListComponent} from '@app/features/search/components/users-list/users-list.component';
-import {GithubService} from '@services/github.service';
-import {UserModel} from '@shared/models/user.model';
-import {Subscription} from 'rxjs';
 import {LoadingSpinnerComponent} from '@components/loading-spinner/loading-spinner.component';
+import {Store} from '@ngrx/store';
+import {AlertComponent} from '@components/alert/alert.component';
 
 @Component({
   selector: 'app-root',
@@ -12,43 +11,19 @@ import {LoadingSpinnerComponent} from '@components/loading-spinner/loading-spinn
     SearchBoxComponent,
     UsersListComponent,
     LoadingSpinnerComponent,
+    AlertComponent,
   ],
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
-  private githubService = inject(GithubService);
-  usersList:UserModel[] = [];
-  isEmpty: boolean = false;
-  errorMessage:string="";
-  loadingSubscription!: Subscription;
-  isLoading: boolean = false;
+  private store = inject(Store);
 
 
   ngOnInit() {
-    this.loadingSubscription = this.githubService.isLoading.subscribe(isLoading => {
-      this.isLoading = isLoading});
+
   }
 
   ngOnDestroy() {
-    this.loadingSubscription.unsubscribe();
   }
 
-  searchForUsers(searchTerm: string) {
-
-    this.githubService.searchUsers(searchTerm).subscribe({
-      next: response => {
-        this.errorMessage="";
-        if(response.items.length > 0) {
-          this.isEmpty=false;
-          this.usersList = response.items;
-        }else{
-          this.isEmpty=true;
-        }
-      },
-      error: error => {
-        this.isEmpty=false;
-        this.errorMessage = error.error.message;
-      }
-    });
-  }
 }
